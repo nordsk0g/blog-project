@@ -1,43 +1,45 @@
 <template>
-  <div class="home">
-    <h1>Home</h1>
+  <div class="tag">
     <div v-if="error">{{ error }}</div>
     <div v-if="posts.length" class="layout">
-      <PostList :posts="posts" />
+      <PostList :posts="taggedPosts"/>
       <TagCloud :posts="posts" />
     </div>
-    <div v-else><Spinner /></div>
+    <div v-else>
+      <Spinner />
+    </div>
   </div>
 </template>
 
 <script>
+import { computed } from '@vue/reactivity';
+import { useRoute } from 'vue-router'
 import PostList from '../components/PostList.vue'
 import getPosts from '../composables/getPosts'
 import Spinner from '../components/Spinner.vue'
 import TagCloud from '../components/TagCloud.vue'
 
 export default {
-  name: 'Home',
   components: { PostList, Spinner, TagCloud },
   setup() {
+    const route = useRoute()
     const { posts, error, load } = getPosts()
 
     load()
-    
-    return { posts, error }
+
+    const taggedPosts = computed(() => {
+      return posts.value.filter(post => post.tags.includes(route.params.tag))
+      })
+
+    return { posts, error, taggedPosts }
   }
 }
 </script>
 
 <style>
-  .home {
+  .tag {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0.75em;
-  }
-  .layout {
-    display: grid;
-    grid-template-columns: 3fr 1fr;
-    gap: 1.25em;
+    padding: 0.8em;
   }
 </style>

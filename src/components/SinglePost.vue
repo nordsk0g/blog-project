@@ -4,8 +4,10 @@
       <h3>{{ post.title }}</h3>
     </router-link>
     <p>{{ snippet }}</p>
-    <span v-for="tag in post.tags" :key="tag">
-      #{{ tag }}
+    <span v-for="tag in post.tags" :key="tag" class="tag">
+      <router-link :to="{ name: 'Tag', params: { tag: tag} }">
+        #{{ tag }}
+      </router-link>
     </span>
   </div>
 </template>
@@ -50,4 +52,13 @@ export default {
     left: -1.75em;
     transform: rotateZ(-1.5deg);
   }
+  .tag a {
+    color: #ccc;
+    text-decoration: none;
+  }
+  .tag a.router-link-active {
+    color: #55B8CF;
+    font-weight: bold;
+  }
+  
 </style>
