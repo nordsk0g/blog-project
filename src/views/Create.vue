@@ -21,6 +21,7 @@
 <script>
 import { ref } from '@vue/reactivity'
 import { useRouter } from 'vue-router'
+import { projectFirestore, timeStamp } from '../firebase/config'
 
 export default {
   setup() {
@@ -33,7 +34,7 @@ export default {
 
     const handleKeydown = () => {
       tag.value = tag.value.trim()
-      if (!tags.value.includes(tag.value)) {
+      if (!tags.value.includes(tag.value) && tag.value.length) {
         tags.value.push(tag.value)
       }
         tag.value = ''
@@ -44,15 +45,11 @@ export default {
         const post = {
           title: title.value,
           body: body.value,
-          tags: tags.value
+          tags: tags.value,
+          createdAt: timeStamp()
           }
         
-        await fetch('http://localhost:3000/posts/', 
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json'},
-          body: JSON.stringify(post)
-        })
+        await projectFirestore.collection('posts').add(post)
 
         router.push({ name: 'Home' })
       } catch (err) {

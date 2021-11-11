@@ -16,7 +16,7 @@ export default {
     margin: 1.75em auto;
     border: 3px solid transparent;
     border-radius: 50%;
-    border-top-color: #68AE0F;
+    border-top-color: #00697E;
     animation: spin 1s ease infinite;
   }
 

@@ -1,20 +1,23 @@
 import { ref } from '@vue/reactivity'
+import { projectFirestore } from '../firebase/config'
+import { useRouter } from 'vue-router'
 
 const getPost = (id) => {
   const post = ref(null)
   const error = ref(null)
+  const router = useRouter()
 
   const load = async () => {
     try {      
-      let data = await fetch(`http://localhost:3000/posts/${id}`)
-      if (!data.ok) {
-        throw Error('post not available')
+      const res = await projectFirestore.collection('posts').doc(id).get()
+      if (!res.exists) {
+        throw Error("Post does not exist")
       }
-  
-      post.value = await data.json()
+      post.value = {...res.data(), id: res.id}
     } catch (err) {
       error.value = err.message
       console.error(err.message)
+      setTimeout(() => router.push('/'), 2000)
     }
   }
 
